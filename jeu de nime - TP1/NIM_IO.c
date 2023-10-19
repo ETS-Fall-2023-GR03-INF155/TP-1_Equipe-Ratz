@@ -1,8 +1,6 @@
-#include "nim.h"
+#include "nim_io.h"
 
 /*==========================================================*/
-
-/*Fonction A*/ int lire_entier(int min, int max);
 
 //Fonction A - Demande a l'usager de saisir un entier entre les bornes "min" et "max".
 int lire_entier(int min, int max)
