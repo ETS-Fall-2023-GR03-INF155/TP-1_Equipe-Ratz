@@ -3,10 +3,10 @@
 /*==========================================================*/
 
 /*Fonction B*/ void plateau_init(int plateau[], int nb_colonnes);
-/*Fonction C*/ int nim_jouer_tour(int plateau[], int nb_colonnes, int colonne, int nb_pieces);
-/*Fonction D*/ void plateau_supprimer_colonne(int plateau[], int nb_colonnes, int col_a_supprimer);
-/*Fonction E*/ int plateau_defragmenter(int plateau[], int nb_colonnes);
-/*Fonction F*/ void nim_choix_ia_aleatoire(const int plateau[], int nb_colonnes, int* choix_colonne, int* choix_nb_pieces);
+/*Fonction D*/ int nim_jouer_tour(int plateau[], int nb_colonnes, int colonne, int nb_pieces);
+/*Fonction E*/ void plateau_supprimer_colonne(int plateau[], int nb_colonnes, int col_a_supprimer);
+/*Fonction F*/ int plateau_defragmenter(int plateau[], int nb_colonnes);
+/*Fonction G*/ void nim_choix_ia_aleatoire(const int plateau[], int nb_colonnes, int* choix_colonne, int* choix_nb_pieces);
 
 
 //Fonction B - Initialise le plateau de jeu en remplissant les "nb_colonnes" d'un nombre aleatoire de pieces entre 1 et PLATEAU_MAX_PIECES = 35.
@@ -28,7 +28,7 @@ void plateau_init(int plateau[], int nb_colonnes)
 }
 
 /*==========================================================*/
-//Fonction C - Applique des changements a la configuration du plateau de jeu en retirant "nb_pieces" de la colonne "colonne" du plateau. 
+//Fonction D - Applique des changements a la configuration du plateau de jeu en retirant "nb_pieces" de la colonne "colonne" du plateau. 
 int nim_jouer_tour(int plateau[], int nb_colonnes, int colonne, int nb_pieces)
 {
 	if (colonne < nb_colonnes && nb_pieces < plateau[colonne])
@@ -42,7 +42,7 @@ int nim_jouer_tour(int plateau[], int nb_colonnes, int colonne, int nb_pieces)
 }
 
 /*==========================================================*/
-//Fonction D - Supprime la colonne "col_a_supprimer" du plateau.
+//Fonction E - Supprime la colonne "col_a_supprimer" du plateau.
 void plateau_supprimer_colonne(int plateau[], int nb_colonnes, int col_a_supprimer)
 {
 	int i, N;
@@ -57,14 +57,14 @@ void plateau_supprimer_colonne(int plateau[], int nb_colonnes, int col_a_supprim
 }
 
 /*==========================================================*/
-//Fonction E - Fonction qui supprime les colonnes vides du tableau en utilisant la fonction "plateau_supprimer_colonne". Le nombre de colonnes restant est retourne.
+//Fonction F - Fonction qui supprime les colonnes vides du tableau en utilisant la fonction "plateau_supprimer_colonne". Le nombre de colonnes restant est retourne.
 int plateau_defragmenter(int plateau[], int nb_colonnes)
 {
 
 }
 
 /*==========================================================*/
-//Fonction F - Fonction qui effectue un jeu aleatoire en choisissant au hasard une colonne, puis au hasard le nombre de pieces a jouer de cette colonne. 
+//Fonction G - Fonction qui effectue un jeu aleatoire en choisissant au hasard une colonne, puis au hasard le nombre de pieces a jouer de cette colonne. 
 void nim_choix_ia_aleatoire(const int plateau[], int nb_colonnes, int* choix_colonne, int* choix_nb_pieces)
 {
 
