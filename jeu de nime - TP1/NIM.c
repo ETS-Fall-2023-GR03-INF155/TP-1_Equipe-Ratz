@@ -1,5 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
 #include "m_distributions.h"
 #include "nim.h"
+#include "nim_io.h"
 
 /*==========================================================*/
 
@@ -22,7 +26,7 @@ void plateau_init(int plateau[], int nb_colonnes)
 }
 
 /*==========================================================*/
-//Fonction D - Applique des changements a la configuration du plateau de jeu en retirant "nb_pieces" de la colonne "colonne" du plateau. 
+//Fonction D - Applique des changements a la configuration du plateau de jeu en retirant "nb_pieces" de la colonne "colonne" du plateau.
 int nim_jouer_tour(int plateau[], int nb_colonnes, int colonne, int nb_pieces)
 {
 	if (colonne < nb_colonnes && nb_pieces < plateau[colonne])
