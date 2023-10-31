@@ -6,60 +6,94 @@
 #include <time.h>
 #include "nim_test.h"
 #include "m_distributions.h"
-
-#define TAILLE 10
+#include <conio.h>
 
 void main()
 {
-	int plateau[TAILLE] = {0, 4}, select;
+    int plateau[] = { 2, 4, 16, 5, 8, 9, 18, 10, 6, 20, 13, 30, 1 }, select, nb_colonnes;
 
-	printf("choisissez une colone: ");
-	scanf("%d", &select);
+    printf("nombre de colonnes: ");
+    scanf("%d", &nb_colonnes);
+
+    printf("choisissez une colone: ");
+    scanf("%d", &select);
 
     printf("\n");
 
-	plateau_afficher(plateau, TAILLE, select);
+    plateau_afficher(plateau, nb_colonnes, select);
+
+    printf("\n");
 }
 
 /*==========================================================*/
 //Fonction C - Affiche la configuration du plateau à l'écran.
+static void afficher_etoile(int x, int is_selected)
+{
+    if (x == is_selected)
+    {
+        textcolor(WHITE);
+        textbackground(RED); // Fond rouge pour la colonne select
+    }
+    else
+    {
+        textcolor(WHITE);
+        textbackground(BLACK); // Fond noir pour les autres colonnes
+    }
+}
+
+
 void plateau_afficher(const int plateau[], int nb_colonnes, int col_select)
 {
-    int i, j, ligne = 10;
+    int i, j;
 
-    printf("   ");  // Marge pour les numéros de colonnes
+    clrscr();				//clears the contents of the console
 
-    for (i = 0; i < nb_colonnes; i++)
+    printf("\n\n");
+
+    // Afficher les numéros de colonne
+    for (i = PLATEAU_MAX_PIECES; i > 0; i--)
     {
-        printf("%d ", i);
+        gotoxy(1, 8 + (PLATEAU_MAX_PIECES - 1));
+        textbackground(BLACK);
+        textcolor(WHITE);
+        if (i >= 10)
+            printf("%d", i);
+        else
+            printf(" %d", i);
+
+        // Nombre de pièces dans chaque colonne
+        for (j = 0; j <= nb_colonnes; j++)
+        {
+            if (i <= plateau[j])
+            {
+                textbackground(BLACK);
+                printf("  ");
+                afficher_etoile(j, col_select);
+                printf("*");
+            }
+            else
+            {
+                textbackground(BLACK);
+                printf("   ");
+            }
+
+            textbackground(BLACK);
+        }
+        printf("\n");
     }
 
     printf("\n");
+    printf("  ");
 
-    for (i = 0; i < nb_colonnes; i++)
+    for (i = 0; i <= nb_colonnes; i++)
     {
-        printf("%d: ", i);
-        
-        for (j = 0; j < plateau[i]; j++)
-        {
-            if (i == col_select)
-            {
-                textcolor(15);
-                textbackground(4);
-                gotoxy(ligne, i);
-                printf("* ");
+        if (i < 10)
+            printf("  ");
+        else
+            printf(" ");
 
-                ligne -= 1;
-            }
-
-            else
-            {
-                textcolor(15);
-                textbackground(0);
-                printf("* ");
-            }
-        }
-
-        printf("\n");
+        afficher_etoile(i, col_select);
+        printf("%d", i);
+        textbackground(BLACK);
     }
 }
