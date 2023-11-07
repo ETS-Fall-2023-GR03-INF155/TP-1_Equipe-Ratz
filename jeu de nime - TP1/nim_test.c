@@ -4,96 +4,110 @@
 #include <assert.h>
 #include <math.h>
 #include <time.h>
+#include <conio.h>
 #include "nim_test.h"
 #include "m_distributions.h"
-#include <conio.h>
+#include "codage_numerique.h"
+
+
+void nim_choix_ia(const int plateau[], int nb_colonnes, int niveau, int* choix_colonne, int* choix_nb_pieces);
 
 void main()
 {
-    int plateau[] = { 2, 4, 16, 5, 8, 9, 18, 10, 6, 20, 13, 30, 1 }, select, nb_colonnes;
+	int plateau[PLATEAU_MAX_COLONNES], niveau, nb_colonne, choix_colonne, choix_nb_pieces;
+	int  un_sur_deux = 1;
 
-    printf("nombre de colonnes: ");
-    scanf("%d", &nb_colonnes);
+	gotoxy(0, 0); printf("MENU:");
+	gotoxy(0, 1); printf("==> Niveau de difficulte");
+	gotoxy(0, 2); printf("(1) Jeu niveau FACILE");
+	gotoxy(0, 3); printf("(2) Jeu niveau MOYEN");
+	gotoxy(0, 4); printf("(3) Jeu niveau DIFFICILE");
+	gotoxy(0, 5); printf("(4) Quitter");
+	gotoxy(2, 7); niveau = lire_entier(1, 4) ;
 
-    printf("choisissez une colone: ");
-    scanf("%d", &select);
+	if (niveau == 4) exit(1);
 
-    printf("\n");
-
-    plateau_afficher(plateau, nb_colonnes, select);
-
-    printf("\n");
+	demarrer_jeu(niveau);
 }
 
-/*==========================================================*/
-//Fonction C - Affiche la configuration du plateau à l'écran.
-static void afficher_etoile(int x, int is_selected)
+void nim_choix_ia(const int plateau[], int nb_colonnes, int niveau, int* choix_colonne, int* choix_nb_pieces)
 {
-    if (x == is_selected)
-    {
-        textcolor(WHITE);
-        textbackground(RED); // Fond rouge pour la colonne select
-    }
-    else
-    {
-        textcolor(WHITE);
-        textbackground(BLACK); // Fond noir pour les autres colonnes
-    }
-}
+	int colonne, pieces, i_impaire;
 
+	srand(time(NULL));
 
-void plateau_afficher(const int plateau[], int nb_colonnes, int col_select)
-{
-    int i, j;
+	int i, j;
+	int val_bit, deci;
+	int matrice[PLATEAU_MAX_COLONNES][CODAGE_NB_BITS], sommes[CODAGE_NB_BITS], tab_ligne[CODAGE_NB_BITS];
 
-    clrscr();				//clears the contents of the console
+	switch (niveau)
+	{
+		case 1: //si le jeu est de niveau facile, on joue aléatoirement. J'apelle la fonction aléatoire
+		{
+			nim_choix_ia_aleatoire(plateau, nb_colonnes, &colonne, &pieces);
 
-    printf("\n\n");
+			printf("L'ordinateur va retirer %d pieces de la colonne %d\n", pieces, colonne);
+			system("pause");
 
-    // Afficher les numéros de colonne
-    for (i = PLATEAU_MAX_PIECES; i > 0; i--)
-    {
-        gotoxy(1, 8 + (PLATEAU_MAX_PIECES - 1));
-        textbackground(BLACK);
-        textcolor(WHITE);
-        if (i >= 10)
-            printf("%d", i);
-        else
-            printf(" %d", i);
+			*choix_colonne = colonne;
+			*choix_nb_pieces = pieces;
 
-        // Nombre de pièces dans chaque colonne
-        for (j = 0; j <= nb_colonnes; j++)
-        {
-            if (i <= plateau[j])
-            {
-                textbackground(BLACK);
-                printf("  ");
-                afficher_etoile(j, col_select);
-                printf("*");
-            }
-            else
-            {
-                textbackground(BLACK);
-                printf("   ");
-            }
+			break;
+		}
 
-            textbackground(BLACK);
-        }
-        printf("\n");
-    }
+		case 2: case 3: //si le jeu est joué de façon intelligente.
+		{
+			construire_mat_binaire(plateau, nb_colonnes, matrice);
+			sommes_mat_binaire(matrice, nb_colonnes, sommes);
 
-    printf("\n");
-    printf("  ");
+			i_impaire = position_premier_impaire(sommes);
 
-    for (i = 0; i <= nb_colonnes; i++)
-    {
-        if (i < 10)
-            printf("  ");
-        else
-            printf(" ");
+			if (i_impaire == -1) // état pair.
+			{
+				nim_choix_ia_aleatoire(plateau, nb_colonnes, &colonne, &pieces);
 
-        afficher_etoile(i, col_select);
-        printf("%d", i);
-        textbackground(BLACK);
-    }
+				printf("L'ordinateur va retirer %d pieces de la colonne %d\n", pieces, colonne);
+				system("pause");
+
+				*choix_colonne = colonne;
+				*choix_nb_pieces = pieces;
+
+				break;
+			}
+			else // état impair.
+			{
+				for (i = 0; i < nb_colonnes; i++)
+				{
+					val_bit = matrice[i][i_impaire];
+
+					if (val_bit == 1)
+						break;
+				}
+
+				*choix_colonne = i;
+
+				for (j = 0; j < CODAGE_NB_BITS; j++)
+				{
+					if (sommes[j] % 2 != 0) // si la somme est impaire
+					{
+						if (matrice[i][j] == 1) matrice[i][j] = 0;
+						else if (matrice[i][j] == 0) matrice[i][j] = 1;
+					}
+
+					tab_ligne[j] = matrice[i][j];
+				}
+
+				deci = codage_bin2dec(tab_ligne);
+
+				pieces = plateau[i] - deci;
+
+				*choix_nb_pieces = pieces;
+
+				printf("L'ordinateur va retirer %d pieces de la colonne %d\n", pieces, i);
+				system("pause");
+			}
+
+			break;
+		}
+	}
 }
