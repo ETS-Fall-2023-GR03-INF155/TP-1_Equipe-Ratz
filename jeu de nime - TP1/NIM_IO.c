@@ -1,17 +1,49 @@
+/************************************************************************************************************************************************************************************/
+/*  Fichier : NIM_IO.C																						                                                                        */
+/*  Auteurs : BOIRET Romain   BOIR71300401																		                                                                    */
+/*	          LENGA  Amorella LENA91330301																		                                                                    */
+/*  Date de création : <17 / 10 / 2023>																		                                                                        */
+/*                                                                                                                                                                                  */
+/*  Ce module contient les définitions des fonctions suivantes : "lire_entier()", "afficher()", "plateau_afficher", "choisir_colonne", "tour_humain", "tour_ia", "demarrer_jeu".    */
+/************************************************************************************************************************************************************************************/
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
 #include "nim_io.h"
 
-/*Fonction privé appartenant à tour_humain*/ static int choisir_colonne(int plateau[], int nb_colonnes, int humtobot);
-/*Fonction privé appartenant à plateau_affiché*/ static void afficher(int x, int y, int is_selected, int humtobot);
+/***************************************************************************************/
+/*                         DECLARATION DES FONCTIONS PRIVÉES                           */
+/***************************************************************************************/
+
+/******** CHOISIR_COLONNE ******/ // <--[fonction privée].
+//Auteurs : BOIRET Romain & LENGA Amorella.
+//Permet de choisir une colonne du plateau de jeu avec les touches fléchées (gauche, droite) ou l’espace (‘ ‘). Au départ, on commence par la colonne [0].
+static int choisir_colonne(int plateau[], int nb_colonnes, int humtobot);
+// plateau[]   : Contient le nombre pièces pour chaque colonne allant de 1 à 35.
+// nb_colonnes : Contient le nombre de colonne du plateau allant de 2 à 20.
+// humtobot    : Sert à changer la couleur de la colonne selectionné du rouge au bleu, la valeur contenue par ce paramètre varie entre -1 et 1.
+
+/******** AFFICHER ******/ // <--[fonction privée].
+//Auteurs : BOIRET Romain & LENGA Amorella.
+//Permet d'afficher la colonne choisie par le joueur en rouge et celle choisie par l'ordinateur en bleu, ainsi que d'indiquer la position des pièces sur le plateau.
+static void afficher(int x, int y, int is_selected, int humtobot);
+// x : Sert pour la fonction "gotoxy()" indique la position en abscisse.
+// y : Sert pour la fonction "gotoxy()" indique la position en ordonnée.
+// is_selected : Contient la valeur de la colonne selectionné allant de 0 à nb_colonnes.
+// humtobot    : Sert à changer la couleur de la colonne selectionné du rouge au bleu, la valeur contenue par ce paramètre varie entre -1 et 1.
+
+/***************************************************************************************/
+/*                             DEFINITION DES FONCTIONS                                */
+/***************************************************************************************/
 
 /*==========================================================*/
-//Fonction A - Demande a l'usager de saisir un entier entre les bornes "min" et "max".
+//Fonction "lire_entier" - La fonction doit valider la saisie et redemander à l'usager de saisir une valeur jusqu'à l'obtention d'une valeur satisfaisante.
 int lire_entier(int min, int max)
 {
-	int entier, valide;
+    int entier; //Représente l'entier que l'utilisateur choisi.
+    int valide; //Permet de valider l'entier choisi.
 
 	do
 	{
@@ -31,7 +63,7 @@ int lire_entier(int min, int max)
 }
 
 /*==========================================================*/
-//Fonction C - Affiche la configuration du plateau à l'écran.
+//Fonction "afficher" - Donne la position et la couleur de "is_selected".
 static void afficher(int x, int y, int is_selected, int humtobot)
 {
     if (x == is_selected * 3)
@@ -39,33 +71,35 @@ static void afficher(int x, int y, int is_selected, int humtobot)
         if (humtobot == 1)
         {
             textcolor(WHITE);
-            textbackground(RED); // Fond rouge pour la colonne select
+            textbackground(RED); //Fond rouge pour la colonne select.
             gotoxy(x + 4, y);
         }
         else
         {
             textcolor(WHITE);
-            textbackground(BLUE); // Fond bleu pour la colonne select
+            textbackground(BLUE); //Fond bleu pour la colonne select.
             gotoxy(x + 4, y);
         }
     }
     else
     {
         textcolor(WHITE);
-        textbackground(BLACK); // Fond noir pour les autres colonnes
+        textbackground(BLACK); //Fond noir pour les autres colonnes.
         gotoxy(x + 4, y);
     }
 }
 
+/*==========================================================*/
+//Fonction "plateau_afficher" - Elle affiche chaque colonne en mettant une pièce (étoile) par ligne, selon le nombre de pièces présentes dans la colonne en question. Les numéros de colonnes ainsi qu’une colonne de chiffres à gauche indiquant le nombre de pièces sont également affichés.
 void plateau_afficher(const int plateau[], int nb_colonnes, int col_select, int humtobot)
 {
-    int ligne = 6; //pour la marge
-    int i, j;
+    int ligne = 6; //Pour la marge.
+    int i, j; //Variables temporaires pour les boucles for.
 
     clrscr();				//clears the contents of the console
     gotoxy(0, 0); printf("****** Tour Joueur ******");
 
-    for (i = PLATEAU_MAX_PIECES; i >= 1; i--)
+    for (i = PLATEAU_MAX_PIECES; i >= PLATEAU_MIN_PIECES; i--)
     {
         afficher(-4, ligne, 0, humtobot);
         printf("%d", i);
@@ -114,31 +148,31 @@ void plateau_afficher(const int plateau[], int nb_colonnes, int col_select, int 
 }
 
 /*==========================================================*/
-//Fonction I - Permet de choisir une colonne avec les fleches directionnelles .
+//Fonction "choisir_colonne" - Au départ, on commence par la colonne [0]. La colonne actuellement sélectionnée sera toujours affichée en ROUGE ou en BLEU (dépendamment de si c'est au tour de l'utilisateur ou de l'ordinateur) avec la fonction "plateau_afficher". Le choix définitif est fait avec la touche ENTER et on retourne le numéro de la colonne choisie. 
 static int choisir_colonne(int plateau[], int nb_colonnes, int humtobot)
 {
-    unsigned char c;
-    int col_select = 0;
+    unsigned char C; //Stocke la valeur que représente la touche présée par le joueur.
+    int col_select = 0; //Stocke la colonne séléctionné.
     while (TRUE)
     {
         plateau_afficher(plateau, nb_colonnes, col_select, humtobot);
         gotoxy(0, 2); printf("==> Veuillez choisir la colonne souhaitee");
         gotoxy(3, 4); printf("<- , -> , <ESPACE> : Changer la selection     <ENTER> : Valider");
 
-        c = _getch();
+        C = _getch();
 
-        if (c == 0 || c == 224)
+        if (C == 0 || C == 224)
         {
-            c = _getch();
+            C = _getch();
         }
 
-        switch (c)
+        switch (C)
         {
-            case 13:
+            case TOUCHE_ENTREE:
             {
                 return col_select;
             }
-            case 75: // Flèche gauche si la colonne choisie est inférieure, on diminue de 1
+            case TOUCHE_GAUCHE: //Flèche gauche si la colonne choisie est inférieure, on diminue de 1.
             {
                 if (col_select > 0)
                 {
@@ -147,11 +181,11 @@ static int choisir_colonne(int plateau[], int nb_colonnes, int humtobot)
                 else col_select = nb_colonnes - 1;
                 break;
             }
-            case 77: case 32: // Flèche droite
+            case TOUCHE_DROITE: case TOUCHE_ESPACE: //Flèche droite.
             {
                 if (col_select < nb_colonnes - 1)
                 {
-                    col_select++; //si la colonne est supérieur on tasse à droite 
+                    col_select++; //Si la colonne est supérieur on tasse à droite.
                 }
                 else col_select = 0;
                 break;
@@ -161,10 +195,11 @@ static int choisir_colonne(int plateau[], int nb_colonnes, int humtobot)
 }
 
 /*==========================================================*/
-//Fonction J - déclenche le tour de l'humain en demandant à l'usager de choisir la colonne et le nombre de pièces à retirer du plateau de jeu.
+//Fonction "tour_humain" - déclenche le tour de l'humain en demandant à l'usager de choisir la colonne et le nombre de pièces à retirer du plateau de jeu. Une fois le choix effectué, la fonction doit faire appel à "nim_jouer_tour" pour appliquer les changements au plateau.
 void tour_humain(int plateau[], int nb_colonnes)
 {
-    int colonnechoisie = 0, nb_pieces;
+    int colonnechoisie = 0; //Représente la colonne choisie.
+    int nb_pieces; //Représente le nombre de pieces choisies par le joueur.
 
     colonnechoisie = choisir_colonne(plateau, nb_colonnes, 1);
 
@@ -178,10 +213,11 @@ void tour_humain(int plateau[], int nb_colonnes)
 }
 
 /*==========================================================*/
-//Fonction K - Déclenche le tour de l'ordinateur.
+//Fonction "tour_ia" - Pour connaitre le choix de l'ordinateur, on fait appel à la fonction "nim_choix_ia". Une fois le choix effectué, la fonction doit faire appel à "nim_jouer_tour" pour appliquer les changements au plateau.
 void tour_ia(int plateau[], int nb_colonnes, int difficulte)
 {
-    int choix_colonne, choix_nb_pieces;
+    int choix_colonne; //Représente la colonne choisie par l'ordinateur.
+    int choix_nb_pieces; //Représente le nombre de pieces choisies par l'ordinateur.
 
     nim_choix_ia(plateau, nb_colonnes, difficulte, &choix_colonne, &choix_nb_pieces);
 
@@ -193,19 +229,22 @@ void tour_ia(int plateau[], int nb_colonnes, int difficulte)
     nim_jouer_tour(plateau, nb_colonnes, choix_colonne, choix_nb_pieces);
 }
 /*==========================================================*/
-//Fonction L - Fonction qui contrôle le jeu de nim: elle donne la main, tour à tour, à chacun des deux joueurs et déclare le gagnant une fois la partie terminée.
+//Fonction "demarrer_jeu" - Pour donner la main aux joueurs, on appelle les fonctions "tour_humain" et "tour_ia" en alternance.  Après chaque tour, cette fonction se charge de défragmenter le plateau de jeu, de modifier la taille du plateau à l'écran et d'afficher la nouvelle configuration du plateau de jeu. 
 void demarrer_jeu(int niveau)
 {
-    static int humtobot = 1; // detecte si c'est le tour de l'humain ou de l'ordinateur.
-    int plateau[PLATEAU_MAX_COLONNES], nb_colonne;
-    static int choix_colonne, choix_nb_pieces;
-    int difficulte = 2, un_sur_deux = -1;
+    static int humtobot = 1; //Détecte si c'est le tour de l'humain ou de l'ordinateur.
+    int plateau[PLATEAU_MAX_COLONNES]; //Tableau qui stocke le nombre de pièces de chaque colonne.
+    int nb_colonne; //Représente le nombre de colonne qui constitue le jeu.
+    static int choix_colonne; //Représente la colonne séléctionné.
+    static int choix_nb_pieces; //Représente le nombre de pièces choisie.
+    int difficulte = 2; //Représente la difficulté du jeu.
+    int un_sur_deux = -1; //Quand le niveau choisi est 2, une fois sur deux, l'ordinateur joue aléatoirement et l'autre fois il joue intéligemment.
     srand(time(NULL));
 
     clrscr();				//clears the contents of the console
     gotoxy(0, 0); printf("***** NOUVELLE PARTIE *****");
     gotoxy(0, 1); printf("Nombre de colonnes:");
-    gotoxy(0, 2); nb_colonne = lire_entier(2, PLATEAU_MAX_COLONNES);
+    gotoxy(0, 2); nb_colonne = lire_entier(PLATEAU_MIN_COLONNES, PLATEAU_MAX_COLONNES);
     plateau_init(plateau, nb_colonne);
 
     while (nb_colonne > 0)
@@ -223,7 +262,7 @@ void demarrer_jeu(int niveau)
             break;
         }
 
-        if (niveau == 2)
+        if (niveau == MOYEN)
         {
             difficulte += un_sur_deux; // difficulte = 1 ou 2
         }
