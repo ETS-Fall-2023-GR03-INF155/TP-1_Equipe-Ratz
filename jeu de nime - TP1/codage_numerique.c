@@ -1,3 +1,12 @@
+/************************************************************************************************************************************************************************************/
+/*  Fichier : CODAGE_NUMERIQUE.C																						                                                            */
+/*  Auteurs : BOIRET Romain   BOIR71300401																		                                                                    */
+/*	          LENGA  Amorella LENA91330301																		                                                                    */
+/*  Date de création : <04 / 11 / 2023>																                                                                                */
+/*                                                                                                                                                                                  */
+/*  Ce module contient les définitions des fonctions suivantes : "inverser_tab_bits()", "codage_dec2bin()", "afficher_tab_bits", "codage_bin2dec".                                  */
+/************************************************************************************************************************************************************************************/
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,11 +14,16 @@
 #include <math.h>
 #include "codage_numerique.h"
 
+/***************************************************************************************/
+/*                             DEFINITION DES FONCTIONS                                */
+/***************************************************************************************/
+
 /*==========================================================*/
-//Fonction M - Fonction qui inverse les "nb_bits/2" premières valeurs d'un tableau de bits.
+//Fonction "inverser_tab_bits" - Fonction qui inverse les "nb_bits/2" premières valeurs d'un tableau de bits: le premier bit devient la dernier (et inversement), le deuxième devient l'avant dernier, etc. Cette fonction est utilisée par la fonction "codage_dec2bin". 
 int inverser_tab_bits(int tab_bits[], int nb_bits)
 {
-    int i, temp;
+    int i; //Variable temporaire pour la boucle for.
+    int temp; //Variable temporaire qui permet de stocker la valeur d'une position du tableau tab_bits[].
 
     if (nb_bits <= CODAGE_NB_BITS)
     {
@@ -27,13 +41,13 @@ int inverser_tab_bits(int tab_bits[], int nb_bits)
 }
 
 /*==========================================================*/
-//Fonction N - Traduit un nombre décimal en binaire.
+//Fonction "codage_dec2bin" - Le résultat est stocké dans le tableau "resultat" et le nombre de bits utilisés est renvoyé. Le codage du nombre décimal doit se faire en un maximum de CODAGE_NB_BITS (fixée à 8).
 int codage_dec2bin(int nombre, int resultat[])
 {
-    int compt = 0;
-    int bin;
-    int inverse;
-    int i;
+    int compt = 0; //Compter chaque fois pour renvoyer le nombre de bits nécessaire pour ce nombre.
+    int bin; //Permet destocker le résultat de la division euclidienne du nombre par 2.
+    int inverse; //Permet de stocker la valeur retourné par le fonction "inverser_tab_bits".
+    int i; //Variable temporaire pour la boucle for.
 
     //stocker résultat dans le tableau, jusquà 8 bits
 
@@ -42,7 +56,7 @@ int codage_dec2bin(int nombre, int resultat[])
         bin = nombre % 2; //fais le modulo de 2
         nombre /= 2;
         resultat[compt] = bin; //ajoute ce résultat dans la position
-        compt++; //compter chaque fois pour renvoyer le nombre de bits nécessaire pour ce nombre
+        compt++; 
     }
 
     for (i = compt; i < CODAGE_NB_BITS; i++)
@@ -61,10 +75,10 @@ int codage_dec2bin(int nombre, int resultat[])
 }
 
 /*==========================================================*/
-//Fonction O - Affiche un tableau contenant des bits à l'écran.
+//Fonction "afficher_tab_bits" - Affiche un tableau contenant des bits à l'écran. Cette fonction est utilisée pour des fins de test. 
 void afficher_tab_bits(const int tab_bits[], int nb_bits)
 {
-    int i;
+    int i; //Variable temporaire pour la boucle for.
 
     for (i = 0; i < nb_bits; i++)
     {
@@ -73,18 +87,17 @@ void afficher_tab_bits(const int tab_bits[], int nb_bits)
 }
 
 /*==========================================================*/
-//Fonction P - Traduit un tableau de bits, représentant un nombre en binaire, vers sa représentation décimale.
-
+//Fonction "codage_bin2dec" - Traduit un tableau de bits, représentant un nombre en binaire, vers sa représentation décimale. La valeur décimale est retournée par la fonction. On présume ici que le tableau de bits est de taille exactement égale à CODAGE_NB_BITS et que le bit de poids fort est à la case 0 du tableau.
 int codage_bin2dec(const int tab_bits[])
 {
-    int valdeci = 0;
-    int i;
+    int valdeci = 0; //Permet de stocker la valeur décimale du nombre binaire reçu dans le tableau en paramètre.
+    int i; //Variable temporaire pour la boucle for.
 
     for (i = CODAGE_NB_BITS - 1; i >= 0; i--)
     {
         if (tab_bits[i] == 1)
         {
-            valdeci += pow(2, CODAGE_NB_BITS - 1 - i);
+            valdeci += (int)pow(2, CODAGE_NB_BITS - 1 - i);
         }
     }
 
