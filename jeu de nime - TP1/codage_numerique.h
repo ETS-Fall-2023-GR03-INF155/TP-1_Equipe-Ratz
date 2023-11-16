@@ -1,11 +1,14 @@
+/********************************************************************************************************/
+/*  Fichier : CODAGE_NUMERIQUE.H                                                                        */
+/*  Auteurs : BOIRET Romain   BOIR71300401		                                                        */
+/*            LENGA  Amorella LENA91330301                                                              */
+/*  Date de création : <04 / 11 / 2023>                                                                 */
+/*                                                                                                      */
+/*  Ce module contient les fonctions necéssaires aux conversions décimal vers binaire et inversement.	*/
+/********************************************************************************************************/
 #pragma once
 
 #define CODAGE_NB_BITS 8 	//Nombre maximal de bits.
-
-/*Fonction M*/ int inverser_tab_bits(int tab_bits[], int nb_bits);
-/*Fonction N*/ int codage_dec2bin(int nombre, int resultat[]);
-/*Fonction O*/ void afficher_tab_bits(const int tab_bits[], int nb_bits);
-/*Fonction P*/ int codage_bin2dec(const int tab_bits[]);
 
 /*******************************************************************************/
 /*                   DÉCLARATION DES FONCTIONS PUBLIQUES                       */

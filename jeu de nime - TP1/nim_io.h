@@ -1,15 +1,17 @@
+/*******************************************************************************/
+/*  Fichier : NIM_IO.H                                                         */
+/*  Auteurs : BOIRET Romain   BOIR71300401		                               */
+/*            LENGA  Amorella LENA91330301                                     */
+/*  Date de création : <17 / 10 / 2023>                                        */
+/*                                                                             */
+/*  Ce module contient les fonctions necéssaires au déroulement du jeu NIM.    */
+/*******************************************************************************/
 #pragma once
 
 #include "WinConsole.h"
 #include "nim.h"
 
-#define FFLUSH while(getchar() != '\n') {}
-
-/*Fonction A*/ int lire_entier(int min, int max);   // <-- fonction publique.
-/*Fonction C*/ void plateau_afficher(const int plateau[], int nb_colonnes, int col_select, int humtobot);   // <-- fonction publique.
-/*Fonction J*/ void tour_humain(int plateau[], int nb_colonnes);   // <-- fonction publique.
-/*Fonction K*/ void tour_ia(int plateau[], int nb_colonnes, int niveau);   // <-- fonction publique.
-/*Fonction L*/ void demarrer_jeu(int niveau);   // <-- fonction publique.
+#define FFLUSH while(getchar() != '\n') {} //Fonction à implémenter derrière chaque instruction scanf().
 
 #define TOUCHE_ENTREE 13                   //La valeur 13 représente la touche "entrée"
 #define TOUCHE_DROITE 77                   //La valeur 77 représente la touche "touche_droite"
@@ -24,7 +26,7 @@
 //Auteurs : BOIRET Romain & LENGA Amorella.
 //Demande à l'usager de saisir un entier entre les bornes "min" et "max" (inclusivement). La fonction doit valider la saisie et redemander à l'usager de saisir une valeur jusqu'à l'obtention d'une valeur satisfaisante.
 //Retourne l'entier saisie par l'utilisateur.
-int lire_entier(int min, int max);
+int lire_entier(int min, int max);   
 // min : Correspond à la valeur minimal que peut valoir l'entier choisi.
 // max : Correspond à la valeur maximal que peut valoir l'entier choisi.
 

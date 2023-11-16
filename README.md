@@ -4,8 +4,8 @@ Ce dépôt GitHub est dédié au développement d'un jeu de Nim, réalisé dans 
 
 ## Auteurs
 
-- [Romain](https://github.com/RomainBoiret)
-- [Amorella](https://github.com/amorella)
+- [Romain BOIRET](https://github.com/RomainBoiret)
+- [Amorella LENGA](https://github.com/amorella)
 
 ## Description du Projet
 
