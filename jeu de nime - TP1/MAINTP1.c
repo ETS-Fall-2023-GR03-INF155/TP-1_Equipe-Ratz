@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <conio.h>
-#include "nim_io.h"
 #include "m_distributions.h"
+#include "nim_test.c"
 
 
 /***************************************************************************************/
